@@ -2,10 +2,28 @@ from xml.dom import UserDataHandler
 from django.shortcuts import redirect, render
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login as loginUser
+from app.forms import ToDoForm
+from app.models import ToDo
+from django.views.generic import ListView
+
+
+class ToDosListView(ListView):
+    model = ToDo
 
 
 def home(request):
-    return render(request, 'home.html')
+    form = ToDoForm()
+    context = {"form": form, "todos": ToDosListView.as_view()}
+    return render(request, 'home.html', context)
+
+
+def add_todo(request):
+    form = ToDoForm(data=request.POST)
+    if form.is_valid():
+        return render('home')
+    else:
+        context = {"form": form}
+        return render(request, 'home.html', context)
 
 
 def login(request):
@@ -31,6 +49,7 @@ def login(request):
 def signup(request):
     if request.method == 'GET':
         form = UserCreationForm()
+        print(form.as_table())
         context = {'form': form}
         return render(request, 'signup.html', context)
     elif request.method == 'POST':

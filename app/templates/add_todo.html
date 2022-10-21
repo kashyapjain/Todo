@@ -1,0 +1,17 @@
+{% extends "base.html" %} {% block title %}Add Todo{% endblock %} {% block content %}
+<div class="container p-5">
+    <div class="col-lg-5 shadow mx-auto p-0">
+        <div class="alert alert-success">
+            <h6>Add ToDo</h6>
+        </div>
+        <div class="p-4">
+            <form method="post" action="/add_todo">
+                {%csrf_token%} {{form.as_p}}
+                <hr/>
+                <input class="btn btn-outline-success" type="submit" value="Save" />
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

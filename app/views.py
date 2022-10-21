@@ -9,28 +9,31 @@ from django.views.generic import ListView
 
 class ToDosListView(ListView):
     model = ToDo
+    context_object_name = 'todos'
 
-
-def home(request):
-    if request.user.is_authenticated:
-        user = request.user
-        form = ToDoForm()
-        context = {"form": form, "todos": ToDosListView.as_view()}
-        return render(request, 'home.html', context)
+    def get_queryset(self):
+        user = self.request.user
+        data = ToDo.objects.filter(user=user).order_by('-date')
+        return data
 
 
 def add_todo(request):
-    if request.user.is_authenticated:
-        user = request.user
-        form = ToDoForm(data=request.POST)
-        if form.is_valid():
-            todo = form.save(commit=False)
-            todo.user = user
-            todo.save()
-            return redirect('home')
-        else:
-            context = {"form": form}
-            return render(request, 'home.html', context)
+    if request.method == 'GET':
+        form = ToDoForm()
+        context = {"form": form}
+        return render(request, 'add_todo.html', context)
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            user = request.user
+            form = ToDoForm(data=request.POST)
+            if form.is_valid():
+                todo = form.save(commit=False)
+                todo.user = user
+                todo.save()
+                return redirect('todo_list')
+            else:
+                context = {"form": form}
+                return render(request, 'home.html', context)
 
 
 def login(request):

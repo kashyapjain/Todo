@@ -13,7 +13,7 @@ class ToDosListView(ListView):
 
     def get_queryset(self):
         user = self.request.user
-        data = ToDo.objects.filter(user=user).order_by('-date')
+        data = ToDo.objects.filter(user=user).order_by('-priority')
         return data
 
 
@@ -83,3 +83,17 @@ def signup(request):
 def logout(request):
     logoutUser(request)
     return redirect('login')
+
+
+@login_required(login_url='login')
+def delete_todo(request, todo_id):
+    ToDo.objects.get(pk=todo_id).delete()
+    return redirect('todo_list')
+
+
+@login_required(login_url='login')
+def change_status(request, todo_id, status):
+    todo = ToDo.objects.get(pk=todo_id)
+    todo.status = status
+    todo.save()
+    return redirect('todo_list')

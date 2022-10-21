@@ -4,8 +4,7 @@
         <div class="d-grid">
             <a class="btn btn-success" href="/add_todo">Create</a>
         </div>
-        <hr/>
-
+        <hr/> {%if todos|length > 0%}
         <table class="table">
             <thead>
                 <tr>
@@ -13,6 +12,7 @@
                     <td>Title</td>
                     <td>Status</td>
                     <td>Priority</td>
+                    <td>Action</td>
                 </tr>
             </thead>
             <tbody>
@@ -20,12 +20,22 @@
                 <tr>
                     <td>{{forloop.counter}}</td>
                     <td>{{todo.title}}</td>
-                    <td>{{todo.status}}</td>
+                    <td>
+                        {%if todo.status == 'c'%} ✅ {%else%} 🕒 {%endif%}
+                    </td>
                     <td>{{todo.priority}}</td>
+                    <td>
+                        <a href="/delete_todo/{{todo.id}}">🗑️</a> {%if todo.status == 'c'%}
+                        <a href="/change_status/{{todo.id}}/p">🕒</a> {%else%}
+                        <a href="/change_status/{{todo.id}}/c">✅</a> {%endif%}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        {%else%}
+        <div class=" alert alert-danger"> No ToDos</div>
+        {%endif%}
     </div>
 </div>
 {% endblock %}

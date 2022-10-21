@@ -1,10 +1,12 @@
 from django.contrib import admin
 from django.urls import path
-from app.views import ToDosListView, login, signup, add_todo
+from app.views import ToDosListView, login, signup, add_todo, logout, home
 
 urlpatterns = [
-    path('', ToDosListView.as_view(), name='todo_list'),
+    path('', home, name='home'),
+    path('todo_list', ToDosListView.as_view(), name='todo_list'),
     path('login', login, name='login'),
     path('signup', signup, name='signup'),
-    path('add_todo', add_todo, name='add_todo')
+    path('add_todo', add_todo, name='add_todo'),
+    path('logout', logout, name='logout')
 ]

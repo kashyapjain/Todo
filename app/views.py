@@ -1,10 +1,10 @@
-from xml.dom import UserDataHandler
 from django.shortcuts import redirect, render
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import authenticate, login as loginUser
+from django.contrib.auth import authenticate, login as loginUser, logout as logoutUser
 from app.forms import ToDoForm
 from app.models import ToDo
 from django.views.generic import ListView
+from django.contrib.auth.decorators import login_required
 
 
 class ToDosListView(ListView):
@@ -17,6 +17,12 @@ class ToDosListView(ListView):
         return data
 
 
+@login_required(login_url='login')
+def home(request):
+    return redirect('todo_list')
+
+
+@login_required(login_url='login')
 def add_todo(request):
     if request.method == 'GET':
         form = ToDoForm()
@@ -33,7 +39,7 @@ def add_todo(request):
                 return redirect('todo_list')
             else:
                 context = {"form": form}
-                return render(request, 'home.html', context)
+                return render(request, 'add_todo.html', context)
 
 
 def login(request):
@@ -50,7 +56,7 @@ def login(request):
                                 password=password)
             if user is not None:
                 loginUser(request, user)
-                return redirect('home')
+                return redirect('todo_list')
         else:
             context = {"form": form}
             return render(request, 'login.html', context)
@@ -71,3 +77,9 @@ def signup(request):
                 return redirect('login')
         else:
             return render(request, 'signup.html', context)
+
+
+@login_required(login_url='login')
+def logout(request):
+    logoutUser(request)
+    return redirect('login')

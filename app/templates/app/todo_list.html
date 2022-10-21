@@ -16,7 +16,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for todo in todos %}
+                {%csrf_token%} {% for todo in todos %}
                 <tr>
                     <td>{{forloop.counter}}</td>
                     <td>{{todo.title}}</td>

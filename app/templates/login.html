@@ -1,7 +1,21 @@
 {% extends "base.html" %} {% block title %}Login{% endblock %} {% block content %}
 
-<div>
-    <h1>Login Page</h1>
+<style>
+    .errorlist {
+        color: red;
+    }
+</style>
+<div class="col-lg-5 shadow mx-auto p-0">
+    <div class="alert alert-success">
+        <h6>Login</h6>
+    </div>
+    <div class="p-4">
+        <form method="post" action="/login">
+            {%csrf_token%} {{form.as_table}}
+            <hr/>
+            <input class="btn btn-outline-success" type="submit" value="Log In" />
+        </form>
+    </div>
 </div>
 
 {% endblock %}

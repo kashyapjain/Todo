@@ -12,18 +12,25 @@ class ToDosListView(ListView):
 
 
 def home(request):
-    form = ToDoForm()
-    context = {"form": form, "todos": ToDosListView.as_view()}
-    return render(request, 'home.html', context)
+    if request.user.is_authenticated:
+        user = request.user
+        form = ToDoForm()
+        context = {"form": form, "todos": ToDosListView.as_view()}
+        return render(request, 'home.html', context)
 
 
 def add_todo(request):
-    form = ToDoForm(data=request.POST)
-    if form.is_valid():
-        return render('home')
-    else:
-        context = {"form": form}
-        return render(request, 'home.html', context)
+    if request.user.is_authenticated:
+        user = request.user
+        form = ToDoForm(data=request.POST)
+        if form.is_valid():
+            todo = form.save(commit=False)
+            todo.user = user
+            todo.save()
+            return redirect('home')
+        else:
+            context = {"form": form}
+            return render(request, 'home.html', context)
 
 
 def login(request):
